@@ -1,9 +1,7 @@
 ﻿namespace Library.API.Models
 {
-    public class CreateBookDto
+    public class CreateBookDto : BookForManipulationDto
     {
-        public string Title { get; set; }
-
-        public string Description { get; set; }
+        
     }
 }

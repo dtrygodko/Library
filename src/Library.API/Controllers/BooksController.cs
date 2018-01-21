@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using AutoMapper;
 using Library.API.Entities;
+using Library.API.Helpers;
 using Library.API.Models;
 using Library.API.Services;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Library.API.Controllers
@@ -55,6 +57,16 @@ namespace Library.API.Controllers
             if (book == null)
             {
                 return BadRequest();
+            }
+
+            if (book.Description == book.Title)
+            {
+                ModelState.AddModelError(nameof(CreateBookDto), "Description should be different from Title.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return new UnprocessableEntityObjectResult(ModelState);
             }
 
             if (!_libraryRepository.AuthorExists(authorId))
@@ -109,6 +121,16 @@ namespace Library.API.Controllers
                 return BadRequest();
             }
 
+            if (model.Description == model.Title)
+            {
+                ModelState.AddModelError(nameof(UpdateBookDto), "Description should be different from Title.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return new UnprocessableEntityObjectResult(ModelState);
+            }
+
             if (!_libraryRepository.AuthorExists(authorId))
             {
                 return NotFound();
@@ -118,7 +140,22 @@ namespace Library.API.Controllers
 
             if (book == null)
             {
-                return NotFound();
+                var bookToAdd = Mapper.Map<Book>(model);
+                bookToAdd.Id = id;
+
+                _libraryRepository.AddBookForAuthor(authorId, bookToAdd);
+
+                if (!_libraryRepository.Save())
+                {
+                    throw new Exception($"Upserting book {id} for author {authorId} failed on save.");
+                }
+
+                var addedBook = Mapper.Map<BookDto>(bookToAdd);
+
+                return CreatedAtRoute("GetBookForAuthor", new
+                {
+                    authorId, id = addedBook.Id
+                }, addedBook);
             }
 
             Mapper.Map(model, book);
@@ -128,6 +165,63 @@ namespace Library.API.Controllers
             if (!_libraryRepository.Save())
             {
                 throw new Exception($"Update book {id} for author {authorId} failed on save.");
+            }
+
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdateBookForAuthor(Guid authorId, Guid id, [FromBody] JsonPatchDocument<UpdateBookDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                return BadRequest();
+            }
+
+            if (!_libraryRepository.AuthorExists(authorId))
+            {
+                return NotFound();
+            }
+
+            var book = _libraryRepository.GetBookForAuthor(authorId, id);
+
+            if (book == null)
+            {
+                var bookDto = new UpdateBookDto();
+                patchDoc.ApplyTo(bookDto);
+
+                var bookToAdd = Mapper.Map<Book>(bookDto);
+                bookToAdd.Id = id;
+
+                _libraryRepository.AddBookForAuthor(authorId, bookToAdd);
+
+                if (!_libraryRepository.Save())
+                {
+                    throw new Exception($"Upserting book {id} for author {authorId} failed on save.");
+                }
+
+                var addedBook = Mapper.Map<BookDto>(bookToAdd);
+
+                return CreatedAtRoute("GetBookForAuthor", new
+                {
+                    authorId,
+                    id = addedBook.Id
+                }, addedBook);
+            }
+
+            var bookToPatch = Mapper.Map<UpdateBookDto>(book);
+
+            patchDoc.ApplyTo(bookToPatch);
+
+            // add validation
+
+            Mapper.Map(bookToPatch, book);
+
+            _libraryRepository.UpdateBookForAuthor(book);
+
+            if (!_libraryRepository.Save())
+            {
+                throw new Exception($"Patching book {id} for author {authorId} failed on save.");
             }
 
             return NoContent();

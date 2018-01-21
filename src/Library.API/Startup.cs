@@ -78,6 +78,8 @@ namespace Library.API
                 cfg.CreateMap<CreateBookDto, Book>();
 
                 cfg.CreateMap<UpdateBookDto, Book>();
+
+                cfg.CreateMap<Book, UpdateBookDto>();
             });
 
             libraryContext.EnsureSeedDataForContext();
