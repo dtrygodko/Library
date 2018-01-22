@@ -2757,6 +2757,44 @@
           "lib/netstandard1.3/Newtonsoft.Json.Bson.dll": {}
         }
       },
+      "NLog/4.5.0-rc02": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/NLog.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/NLog.dll": {}
+        }
+      },
+      "NLog.Extensions.Logging/1.0.0-rtm-rc4": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "2.0.0",
+          "NLog": "[4.5.0-rc02, 5.0.0)"
+        },
+        "compile": {
+          "lib/netstandard2.0/NLog.Extensions.Logging.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/NLog.Extensions.Logging.dll": {}
+        }
+      },
+      "NLog.Web.AspNetCore/4.5.0-rc2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.AspNetCore.Hosting.Abstractions": "2.0.0",
+          "Microsoft.AspNetCore.Http": "2.0.0",
+          "Microsoft.AspNetCore.Http.Extensions": "2.0.0",
+          "Microsoft.AspNetCore.Routing.Abstractions": "2.0.0",
+          "NLog.Extensions.Logging": "1.0.0-rtm-rc4"
+        },
+        "compile": {
+          "lib/netstandard2.0/NLog.Web.AspNetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/NLog.Web.AspNetCore.dll": {}
+        }
+      },
       "Remotion.Linq/2.1.1": {
         "type": "package",
         "dependencies": {
@@ -7596,6 +7634,71 @@
         "lib/netstandard1.3/Newtonsoft.Json.Bson.xml",
         "newtonsoft.json.bson.1.0.1.nupkg.sha512",
         "newtonsoft.json.bson.nuspec"
+      ]
+    },
+    "NLog/4.5.0-rc02": {
+      "sha512": "O/zi4fpOqfAiBdpPx7hwUKuMVB0Y4qA/nBkIHUmSoBZASfKKEu7ND1saW1Ga9ipw8QJQjhpH9PwvTVngbkVp0g==",
+      "type": "package",
+      "path": "nlog/4.5.0-rc02",
+      "files": [
+        "lib/monoandroid44/NLog.dll",
+        "lib/monoandroid44/NLog.xml",
+        "lib/net35/NLog.dll",
+        "lib/net35/NLog.xml",
+        "lib/net40-client/NLog.dll",
+        "lib/net40-client/NLog.xml",
+        "lib/net45/NLog.dll",
+        "lib/net45/NLog.xml",
+        "lib/netstandard1.5/NLog.dll",
+        "lib/netstandard1.5/NLog.xml",
+        "lib/netstandard2.0/NLog.dll",
+        "lib/netstandard2.0/NLog.xml",
+        "lib/sl4/NLog.dll",
+        "lib/sl4/NLog.xml",
+        "lib/sl5/NLog.dll",
+        "lib/sl5/NLog.xml",
+        "lib/uap10.0/NLog.dll",
+        "lib/uap10.0/NLog.xml",
+        "lib/wp8/NLog.dll",
+        "lib/wp8/NLog.xml",
+        "lib/xamarinios10/NLog.dll",
+        "lib/xamarinios10/NLog.xml",
+        "nlog.4.5.0-rc02.nupkg.sha512",
+        "nlog.nuspec"
+      ]
+    },
+    "NLog.Extensions.Logging/1.0.0-rtm-rc4": {
+      "sha512": "C2DtkgDDogqWSAHUvcCt/mOrGFA1W4oS2T+ibg0BeSc2t37l5KetkERQNpHvCxgeJRxYewLuWz0RTS8DPa36Vw==",
+      "type": "package",
+      "path": "nlog.extensions.logging/1.0.0-rtm-rc4",
+      "files": [
+        "lib/net451/NLog.Extensions.Logging.dll",
+        "lib/net451/NLog.Extensions.Logging.xml",
+        "lib/net461/NLog.Extensions.Logging.dll",
+        "lib/net461/NLog.Extensions.Logging.xml",
+        "lib/netstandard1.5/NLog.Extensions.Logging.dll",
+        "lib/netstandard1.5/NLog.Extensions.Logging.xml",
+        "lib/netstandard2.0/NLog.Extensions.Logging.dll",
+        "lib/netstandard2.0/NLog.Extensions.Logging.xml",
+        "nlog.extensions.logging.1.0.0-rtm-rc4.nupkg.sha512",
+        "nlog.extensions.logging.nuspec"
+      ]
+    },
+    "NLog.Web.AspNetCore/4.5.0-rc2": {
+      "sha512": "o0dCKaLDYk91gpagbujo84a1hOu75v97ChLV6L3ZG80/DYjPkmrp0y4f++U9v/emP6lyeJUieiKRHu+z6mp0SA==",
+      "type": "package",
+      "path": "nlog.web.aspnetcore/4.5.0-rc2",
+      "files": [
+        "lib/net451/NLog.Web.AspNetCore.dll",
+        "lib/net451/NLog.Web.AspNetCore.xml",
+        "lib/net461/NLog.Web.AspNetCore.dll",
+        "lib/net461/NLog.Web.AspNetCore.xml",
+        "lib/netstandard1.5/NLog.Web.AspNetCore.dll",
+        "lib/netstandard1.5/NLog.Web.AspNetCore.xml",
+        "lib/netstandard2.0/NLog.Web.AspNetCore.dll",
+        "lib/netstandard2.0/NLog.Web.AspNetCore.xml",
+        "nlog.web.aspnetcore.4.5.0-rc2.nupkg.sha512",
+        "nlog.web.aspnetcore.nuspec"
       ]
     },
     "Remotion.Linq/2.1.1": {
@@ -12571,11 +12674,12 @@
     ".NETCoreApp,Version=v2.0": [
       "AutoMapper >= 6.2.2",
       "Microsoft.AspNetCore.All >= 2.0.5",
-      "Microsoft.NETCore.App >= 2.0.0"
+      "Microsoft.NETCore.App >= 2.0.0",
+      "NLog.Web.AspNetCore >= 4.5.0-rc2"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dtryg\\.nuget\\packages\\": {},
+    "C:\\Users\\dmytro.tryhodko\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
@@ -12584,17 +12688,17 @@
       "hideWarningsAndErrors": true
     },
     "restore": {
-      "projectUniqueName": "D:\\Projects\\Library\\src\\Library.API\\Library.API.csproj",
+      "projectUniqueName": "D:\\TestProjects\\Library\\src\\Library.API\\Library.API.csproj",
       "projectName": "Library.API",
-      "projectPath": "D:\\Projects\\Library\\src\\Library.API\\Library.API.csproj",
-      "packagesPath": "C:\\Users\\dtryg\\.nuget\\packages\\",
-      "outputPath": "D:\\Projects\\Library\\src\\Library.API\\obj\\",
+      "projectPath": "D:\\TestProjects\\Library\\src\\Library.API\\Library.API.csproj",
+      "packagesPath": "C:\\Users\\dmytro.tryhodko\\.nuget\\packages\\",
+      "outputPath": "D:\\TestProjects\\Library\\src\\Library.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\dtryg\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\dmytro.tryhodko\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -12630,6 +12734,10 @@
             "target": "Package",
             "version": "[2.0.0, )",
             "autoReferenced": true
+          },
+          "NLog.Web.AspNetCore": {
+            "target": "Package",
+            "version": "[4.5.0-rc2, )"
           }
         },
         "imports": [

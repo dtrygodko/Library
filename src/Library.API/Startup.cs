@@ -8,9 +8,11 @@ using Library.API.Services;
 using Library.API.Entities;
 using Library.API.Helpers;
 using Library.API.Models;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
+using NLog.Extensions.Logging;
 
 namespace Library.API
 {
@@ -59,6 +61,14 @@ namespace Library.API
                 {
                     appBuilder.Run(async context =>
                     {
+                        var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+
+                        if (exceptionHandlerFeature != null)
+                        {
+                            var logger = loggerFactory.CreateLogger("Global exception handler");
+                            logger.LogError(500, exceptionHandlerFeature.Error, exceptionHandlerFeature.Error.Message);
+                        }
+
                         context.Response.StatusCode = 500;
                         await context.Response.WriteAsync("An unexpected error happened. Try again later.");
                     });
