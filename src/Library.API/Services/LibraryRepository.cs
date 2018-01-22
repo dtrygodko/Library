@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Library.API.Helpers;
 
 namespace Library.API.Services
 {
@@ -64,9 +65,27 @@ namespace Library.API.Services
             return _context.Authors.FirstOrDefault(a => a.Id == authorId);
         }
 
-        public IEnumerable<Author> GetAuthors()
+        public PagedList<Author> GetAuthors(AuthorsResourceParameters authorsResourceParameters)
         {
-            return _context.Authors.OrderBy(a => a.FirstName).ThenBy(a => a.LastName);
+            var collection = _context.Authors.OrderBy(a => a.FirstName)
+                                             .ThenBy(a => a.LastName)
+                                             .AsQueryable();
+
+            if (authorsResourceParameters.Genre != null)
+            {
+                var genre = authorsResourceParameters.Genre.Trim().ToLowerInvariant();
+                collection = collection.Where(a => a.Genre.ToLowerInvariant() == genre);
+            }
+
+            if (authorsResourceParameters.SearchQuery != null)
+            {
+                var searchQuery = authorsResourceParameters.SearchQuery.Trim().ToLowerInvariant();
+                collection = collection.Where(a => a.Genre.ToLowerInvariant().Contains(searchQuery)
+                                                   || a.FirstName.ToLowerInvariant().Contains(searchQuery)
+                                                   || a.LastName.ToLowerInvariant().Contains(searchQuery));
+            }
+
+            return PagedList<Author>.Create(collection, authorsResourceParameters.PageNumber, authorsResourceParameters.PageSize);
         }
 
         public IEnumerable<Author> GetAuthors(IEnumerable<Guid> authorIds)
