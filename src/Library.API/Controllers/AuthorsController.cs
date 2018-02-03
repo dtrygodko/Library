@@ -63,7 +63,8 @@ namespace Library.API.Controllers
                         pageNumber = parameters.PageNumber - 1,
                         pageSize = parameters.PageSize,
                         genre = parameters.Genre,
-                        searchQuery = parameters.SearchQuery
+                        searchQuery = parameters.SearchQuery,
+                        orderBy = parameters.OrderBy
                     });
                 case ResourceUriType.NextPage:
                     return _urlHelper.Link("GetAuthors", new
@@ -71,7 +72,8 @@ namespace Library.API.Controllers
                         pageNumber = parameters.PageNumber + 1,
                         pageSize = parameters.PageSize,
                         genre = parameters.Genre,
-                        searchQuery = parameters.SearchQuery
+                        searchQuery = parameters.SearchQuery,
+                        orderBy = parameters.OrderBy
                     });
                 default:
                     return _urlHelper.Link("GetAuthors", new
@@ -79,7 +81,8 @@ namespace Library.API.Controllers
                         pageNumber = parameters.PageNumber,
                         pageSize = parameters.PageSize,
                         genre = parameters.Genre,
-                        searchQuery = parameters.SearchQuery
+                        searchQuery = parameters.SearchQuery,
+                        orderBy = parameters.OrderBy
                     });
             }
         }
