@@ -38,12 +38,12 @@ namespace Library.API.Helpers
 
                 var propertyName = indexOfFirstSpace == -1 ? trimmedClause : trimmedClause.Remove(indexOfFirstSpace);
 
-                if (!mappings.ContainsKey(propertyName))
+                if (!mappings.ContainsKey(propertyName.ToLower()))
                 {
                     throw new ArgumentException($"Key mapping for {propertyName} is missing");
                 }
 
-                var propertyMappingValue = mappings[propertyName];
+                var propertyMappingValue = mappings[propertyName.ToLower()];
 
                 if (propertyMappingValue == null)
                 {
