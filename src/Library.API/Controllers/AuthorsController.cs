@@ -119,7 +119,15 @@ namespace Library.API.Controllers
                 return NotFound();
             }
 
-            return Ok(Mapper.Map<AuthorDto>(author).ShapeData(fields));
+            var authorDto = Mapper.Map<AuthorDto>(author);
+
+            var links = CreateLinksForAuthor(id, fields);
+
+            var resourceToReturn = authorDto.ShapeData(fields) as IDictionary<string, object>;
+
+            resourceToReturn.Add("links", links);
+
+            return Ok(resourceToReturn);
         }
 
         [HttpPost]
@@ -141,7 +149,13 @@ namespace Library.API.Controllers
 
             var createdAutor = Mapper.Map<AuthorDto>(authorEntity);
 
-            return CreatedAtRoute("GetAuthor", new { id = createdAutor.Id }, createdAutor);
+            var links = CreateLinksForAuthor(createdAutor.Id, null);
+
+            var resourceToReturn = createdAutor.ShapeData(null) as IDictionary<string, object>;
+
+            resourceToReturn.Add("links", links);
+
+            return CreatedAtRoute("GetAuthor", new { id = resourceToReturn["Id"] }, resourceToReturn);
         }
 
         [HttpPost("{id}")]
@@ -155,7 +169,7 @@ namespace Library.API.Controllers
             return NotFound();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DeleteAuthor")]
         public IActionResult DeleteAuthor(Guid id)
         {
             var author = _libraryRepository.GetAuthor(id);
@@ -173,6 +187,26 @@ namespace Library.API.Controllers
             }
 
             return NoContent();
+        }
+
+        private IEnumerable<LinkDto> CreateLinksForAuthor(Guid id, string fields)
+        {
+            var links = new List<LinkDto>();
+
+            if (string.IsNullOrWhiteSpace(fields))
+            {
+                links.Add(new LinkDto(_urlHelper.Link("GetAuthor", new {id}), "self", "GET"));
+            }
+            else
+            {
+                links.Add(new LinkDto(_urlHelper.Link("GetAuthor", new { id, fields }), "self", "GET"));
+            }
+
+            links.Add(new LinkDto(_urlHelper.Link("DeleteAuthor", new { id }), "delete_author", "DELETE"));
+            links.Add(new LinkDto(_urlHelper.Link("CreateBookForAuthor", new { authorId = id }), "create_book_for_author", "POST"));
+            links.Add(new LinkDto(_urlHelper.Link("GetBooksForAuthor", new { authorId = id }), "books", "GET"));
+
+            return links;
         }
     }
 }
