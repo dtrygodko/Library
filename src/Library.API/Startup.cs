@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,18 @@ namespace Library.API
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
 
                 setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter());
+
+                var jsonOutputFormatter = setupAction.OutputFormatters.OfType<JsonOutputFormatter>().FirstOrDefault();
+
+                jsonOutputFormatter?.SupportedMediaTypes.Add("application/vnd.marvin.hateoas+json");
+
+                var jsonInputFormatter = setupAction.InputFormatters.OfType<JsonInputFormatter>().FirstOrDefault();
+
+                if (jsonInputFormatter != null)
+                {
+                    jsonInputFormatter.SupportedMediaTypes.Add("application/vnd.marvin.authorwithdateofdeath.full+json");
+                    jsonInputFormatter.SupportedMediaTypes.Add("application/vnd.marvin.author.full+json");
+                }
             })
             .AddJsonOptions(options =>
                 {
@@ -98,7 +111,7 @@ namespace Library.API
             {
                 cfg.CreateMap<Author, AuthorDto>()
                     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}"))
-                    .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.GetCurrentAge()));
+                    .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.GetCurrentAge(src.DateOfDeath)));
 
                 cfg.CreateMap<Book, BookDto>();
 
@@ -109,6 +122,8 @@ namespace Library.API
                 cfg.CreateMap<UpdateBookDto, Book>();
 
                 cfg.CreateMap<Book, UpdateBookDto>();
+
+                cfg.CreateMap<CreateAuthorWithDateOfDeathDto, Author>();
             });
 
             libraryContext.EnsureSeedDataForContext();
