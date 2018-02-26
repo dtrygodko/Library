@@ -38,7 +38,10 @@ namespace Library.API
                 setupAction.ReturnHttpNotAcceptable = true;
                 setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
 
-                setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter());
+                var xmlInputFormatter = new XmlDataContractSerializerInputFormatter();
+                xmlInputFormatter.SupportedMediaTypes.Add("application/vnd.marvin.authorwithdateofdeath.full+xml");
+
+                setupAction.InputFormatters.Add(xmlInputFormatter);
 
                 var jsonOutputFormatter = setupAction.OutputFormatters.OfType<JsonOutputFormatter>().FirstOrDefault();
 
@@ -77,6 +80,10 @@ namespace Library.API
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
 
             services.AddTransient<ITypeHelperService, TypeHelperService>();
+
+            services.AddHttpCacheHeaders(emo => emo.MaxAge = 600, vmo => vmo.AddMustRevalidate = true);
+
+            services.AddResponseCaching();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -127,6 +134,10 @@ namespace Library.API
             });
 
             libraryContext.EnsureSeedDataForContext();
+
+            app.UseResponseCaching();
+
+            app.UseHttpCacheHeaders();
 
             app.UseMvc(); 
         }
